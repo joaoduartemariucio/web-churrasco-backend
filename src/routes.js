@@ -13,7 +13,13 @@ routes.post('/login/create', celebrate({
     })
 }),LoginController.create);
 
-routes.post('/login/session', LoginController.session);
+routes.post('/login/session', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        email: Joi.string().required().email(),
+        password: Joi.string().required()
+    })
+}),LoginController.session);
+
 routes.get('/login/all', LoginController.index);
 
 module.exports = routes;

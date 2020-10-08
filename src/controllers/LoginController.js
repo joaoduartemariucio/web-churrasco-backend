@@ -1,5 +1,6 @@
 const connection = require('../database/connection');
 const jwt = require('jsonwebtoken');
+const { use } = require('../routes');
 
 module.exports = {
 
@@ -10,10 +11,10 @@ module.exports = {
 
     async create(request, response) {
         const { name, email, password } = request.body;
-        
-        const user = await connection('login_user').where('email', email).select("*").first()
 
-        if (user.email == email) {
+        const users = await connection('login_user').where('email', email).select("*");
+
+        if (users.length) {
             return response.status(400).json({ error: "O e-mail informado já está cadastrado" });
         }
 
