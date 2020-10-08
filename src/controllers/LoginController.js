@@ -4,12 +4,18 @@ const jwt = require('jsonwebtoken');
 module.exports = {
 
     async index(request, response) {
-        const ongs = await connection('login_user').select('*');
-        return response.json(ongs);
+        const users = await connection('login_user').select('*');
+        return response.json(users);
     },
 
     async create(request, response) {
         const { name, email, password } = request.body;
+        
+        const user = await connection('login_user').where('email', email).select("*").first()
+
+        if (user.email == email) {
+            return response.status(400).json({ error: "O e-mail informado já está cadastrado" });
+        }
 
         await connection('login_user').insert({
             name,
